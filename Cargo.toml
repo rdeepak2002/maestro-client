@@ -1,0 +1,22 @@
+[package]
+name = "maetro_client"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+uniffi = { version = "0.29.3", features = ["cli"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["blocking", "json"] }
+anyhow = "1.0"
+
+[build-dependencies]
+uniffi = { version = "0.29.3", features = ["build"] }
+
+[lib]
+crate-type = ["cdylib"]
+name = "maestro_client"
+
+[[bin]]
+name = "maestro_client"
+path = "maestro-bindgen.rs"

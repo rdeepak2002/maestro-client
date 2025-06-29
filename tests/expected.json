@@ -1,0 +1,78 @@
+{
+  "workflow_definition": {
+    "properties_snapshot": {
+      "workflow_id": "sample-python-client-workflow",
+      "create_time": 1751262545512,
+      "author": "tester",
+      "owner": "tester",
+      "run_strategy": {
+        "rule": "SEQUENTIAL",
+        "workflow_concurrency": 1
+      }
+    },
+    "metadata": {
+      "workflow_id": "sample-python-client-workflow",
+      "workflow_version_id": 17,
+      "create_time": 1751262545512,
+      "version_author": "tester"
+    },
+    "workflow": {
+      "id": "sample-python-client-workflow",
+      "params": {
+        "foo": {
+          "expression": "return 1+1;",
+          "type": "LONG"
+        }
+      },
+      "steps": [
+        {
+          "step": {
+            "id": "job.1",
+            "transition": {
+              "successors": {
+                "job.2": "true",
+                "job.3": "true"
+              }
+            },
+            "type": "NoOp"
+          }
+        },
+        {
+          "step": {
+            "id": "job.2",
+            "transition": {
+            },
+            "type": "NoOp",
+            "params": {
+              "bar": {
+                "expression": "return foo + 1;",
+                "type": "LONG"
+              }
+            }
+          }
+        },
+        {
+          "step": {
+            "id": "job.3",
+            "transition": {
+            },
+            "type": "NoOp",
+            "params": {
+              "bar": {
+                "value": 1,
+                "type": "LONG"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "is_active": true,
+    "activate_time": 1751262545512,
+    "activated_by": "tester",
+    "is_latest": true,
+    "is_default": true,
+    "internal_id": 10002,
+    "modify_time": 1751262545518
+  }
+}
