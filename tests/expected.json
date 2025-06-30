@@ -1,7 +1,7 @@
 {
   "workflow_definition": {
     "properties_snapshot": {
-      "workflow_id": "sample-python-client-workflow",
+      "workflow_id": "sample-dag-test-1",
       "create_time": 1751262545512,
       "author": "tester",
       "owner": "tester",
@@ -11,13 +11,13 @@
       }
     },
     "metadata": {
-      "workflow_id": "sample-python-client-workflow",
+      "workflow_id": "sample-dag-test-1",
       "workflow_version_id": 17,
       "create_time": 1751262545512,
       "version_author": "tester"
     },
     "workflow": {
-      "id": "sample-python-client-workflow",
+      "id": "sample-dag-test-1",
       "params": {
         "foo": {
           "expression": "return 1+1;",

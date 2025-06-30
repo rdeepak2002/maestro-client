@@ -29,7 +29,7 @@ def test_workflow_push():
 
     # Build the workflow using defined steps
     workflow_push_result = (
-        WorkflowBuilder("sample-python-client-workflow")
+        WorkflowBuilder("sample-dag-test-1")
         .add_param("foo", "return 1+1;", "long")
         .add_step(step_1)
         .add_step(step_2)
