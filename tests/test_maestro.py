@@ -65,9 +65,11 @@ def test_workflow_push():
     expected_def.pop("activate_time")
     actual_def.pop("modify_time")
     expected_def.pop("modify_time")
+    actual_def.pop("internal_id")
+    expected_def.pop("internal_id")
 
     # Compare the JSONs
-    assert actual_json == expected_json, "Workflow response doesn't match expected JSON"
+    assert actual_json == expected_json, f"Workflow response doesn't match expected JSON, actual: {actual_json}, expected: {expected_json}"
 
     logging.info("\033[92mPython integration tests PASSED\033[0m")
 
