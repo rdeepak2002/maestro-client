@@ -12,6 +12,7 @@
       <sourceFolder url="file://$MODULE_DIR$/scheduler-client-py/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scheduler-client/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/scheduler-client-jdk23/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/scheduler-client-py/examples" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
