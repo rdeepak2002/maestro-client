@@ -3,28 +3,13 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.VarHandle;
 import java.util.UUID;
 
-class Workflow implements AutoCloseable {
-    private final MemorySegment nativePtr;
-    private final Arena arena;
-
-    // todo: this should be private
-    public Workflow(MemorySegment nativePtr, Arena arena) {
-        this.nativePtr = nativePtr;
-        this.arena = arena;
+class Workflow extends NativeObject {
+    Workflow(MemorySegment nativePtr, Arena arena) {
+        super(nativePtr, arena);
     }
 
     public String getId() {
-        try {
-            MemorySegment idPtr = (MemorySegment) SchedulerClient.workflowGetId.invokeExact(nativePtr);
-            if (idPtr.equals(MemorySegment.NULL)) {
-                return null;
-            }
-            String id = idPtr.reinterpret(Long.MAX_VALUE).getString(0);
-            SchedulerClient.freeString.invokeExact(idPtr);
-            return id;
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        return getNativeString(SchedulerClient.workflowGetId);
     }
 
     public static WorkflowBuilder builder() {
@@ -32,46 +17,55 @@ class Workflow implements AutoCloseable {
     }
 
     @Override
-    public void close() {
-        try {
-            SchedulerClient.workflowFree.invokeExact(nativePtr);
-            arena.close();
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+    protected MethodHandle getNativeDestructor() {
+        return SchedulerClient.workflowFree;
     }
 }
 
-class WorkflowBuilder {
-    private MemorySegment builderPtr;
-    private final Arena arena;
+class WorkflowBuilder extends NativeObject {
+    private WorkflowBuilder(MemorySegment nativePtr, Arena arena) {
+        super(nativePtr, arena);
+    }
 
     public WorkflowBuilder() {
+        this(createBuilder(), Arena.ofConfined());
+    }
+
+    private static MemorySegment createBuilder() {
         try {
-            this.arena = Arena.ofConfined();
-            this.builderPtr = (MemorySegment) SchedulerClient.workflowBuilderNew.invokeExact();
+            return (MemorySegment) SchedulerClient.workflowBuilderNew.invokeExact();
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to create WorkflowBuilder", e);
         }
     }
 
     public WorkflowBuilder id(String id) {
+        checkNotClosed();
         try {
             MemorySegment idSegment = arena.allocateFrom(id);
-            this.builderPtr = (MemorySegment) SchedulerClient.workflowBuilderSetId.invokeExact(builderPtr, idSegment);
+            MemorySegment newPtr = (MemorySegment) SchedulerClient.workflowBuilderSetId.invokeExact(nativePtr, idSegment);
+            // The builder pattern in Rust returns the same object with modifications
+            if (!newPtr.equals(nativePtr)) {
+                throw new RuntimeException("Unexpected pointer change in id setter");
+            }
             return this;
         } catch (Throwable e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to set id", e);
         }
     }
 
     public Workflow build() {
-        try {
-            MemorySegment workflowPtr = (MemorySegment) SchedulerClient.workflowBuilderBuild.invokeExact(builderPtr);
-            return new Workflow(workflowPtr, arena);
-        } catch (Throwable e) {
-            throw new RuntimeException(e);
-        }
+        return consumeAndCreate(
+            SchedulerClient.workflowBuilderBuild,
+            Workflow::new
+        );
+    }
+
+    @Override
+    protected MethodHandle getNativeDestructor() {
+        // WorkflowBuilder doesn't need explicit destruction as it's consumed by build()
+        // But we need to provide something for the base class
+        return SchedulerClient.workflowBuilderFree;
     }
 }
 
@@ -79,6 +73,7 @@ public class SchedulerClient {
     static MethodHandle workflowBuilderNew;
     static MethodHandle workflowBuilderSetId;
     static MethodHandle workflowBuilderBuild;
+    static MethodHandle workflowBuilderFree;
     static MethodHandle workflowGetId;
     static MethodHandle workflowFree;
     static MethodHandle freeString;
@@ -101,6 +96,11 @@ public class SchedulerClient {
         workflowBuilderBuild = linker.downcallHandle(
             lib.find("workflow_builder_build").orElseThrow(),
             FunctionDescriptor.of(ValueLayout.ADDRESS, ValueLayout.ADDRESS)
+        );
+        
+        workflowBuilderFree = linker.downcallHandle(
+            lib.find("workflow_builder_free").orElseThrow(),
+            FunctionDescriptor.ofVoid(ValueLayout.ADDRESS)
         );
         
         workflowGetId = linker.downcallHandle(
