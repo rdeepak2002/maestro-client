@@ -30,7 +30,7 @@ test-python: build
 test-jdk23: build
 	cd scheduler-client-jdk23/ && \
 		javac SchedulerClient.java && \
-		java -Djava.library.path='../dist/' SchedulerClient
+		java -ea -Djava.library.path='../dist/' SchedulerClient
 
 test: test-rust test-python test-jdk23
 

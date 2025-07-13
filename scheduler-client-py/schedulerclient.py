@@ -1,7 +1,7 @@
 #!/usr/bin/env python
-import schedulerclient_py
+from schedulerclient_py import Workflow
 
 if __name__ == '__main__':
-    result = schedulerclient_py.div_numbers(4, 2)
-    assert result == 2
-    print('4 / 2 = %d' % result)
+    workflow = Workflow.builder().id("x").build()
+    assert "x" == workflow.id
+    print("Python tests pass")
