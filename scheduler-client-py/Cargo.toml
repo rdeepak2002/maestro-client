@@ -1,0 +1,14 @@
+[package]
+name = "scheduler-client-py"
+version = "0.1.0"
+authors = ["rdeepak2002"]
+edition = "2018"
+
+[dependencies]
+pyo3 = { version = "0.25.1", features = ["extension-module"] }
+schedulerclient = { path = "../scheduler-client" }
+pyo3-build-config = "0.25.1"
+
+[lib]
+name = "schedulerclient_py"
+crate-type = ["cdylib"]

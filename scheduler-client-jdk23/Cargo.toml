@@ -1,0 +1,11 @@
+[package]
+name = "schedulerclient_jdk23"
+version = "0.1.0"
+authors = ["rdeepak2002"]
+edition = "2018"
+
+[dependencies]
+schedulerclient = { path = "../scheduler-client" }
+
+[lib]
+crate-type = ["cdylib"]

@@ -1,20 +1,20 @@
 <h1 align="center">🎻 maestro-client</h1>
 
 <p align="center">
-  Unofficial Python and (coming soon) Kotlin client libraries for the <a href="https://github.com/Netflix/maestro">Maestro workflow scheduler</a>
+  Unofficial Python and Java client libraries for the <a href="https://github.com/Netflix/maestro">Maestro workflow scheduler</a>
 </p>
 
 ---
 
 ## ✨ Features
 
-- 📦 Python and (coming soon) Kotlin clients
+- 📦 Python and Java clients
 - 🔧 Easy workflow construction with builders
 - 🔁 Seamless integration with Maestro scheduler
 
 ---
 
-## 🧪 Examples
+## 🧑‍🏫 Examples
 
 ### 🐍 Python Client
 
@@ -54,18 +54,23 @@ workflow_push_result = (
 print(workflow_push_result)
 ```
 
-### ☕ Kotlin Client
+### ☕ Java Client (JDK >= 23)
 
-```kotlin
+```java
 // Coming soon...
 ```
+
+> **Why JDK >= 23?** JDK 23 officially supports [JEP 454: Foreign Function & Memory API](https://openjdk.org/jeps/454)
+> which is a modern alternative to JNI. Using JNI can be difficult and prone to mistakes. It also adds considerable
+> overhead, as frequent native method invocations lack the performance benefits of Just-In-Time (JIT) compilation.
+> If support for Java < 22 is needed via JNI, contributions are welcome.
 
 ---
 
 ## 🛠️ Build the Library
 
 ```bash
-./build.sh
+make build
 ```
 
 > 🧠 This builds the clients for the platform you're on. When using
@@ -73,17 +78,14 @@ print(workflow_push_result)
 > be defined to specify where the Maestro API server is hosted.
 > By default, port `8080` will be used.
 
-> 📦 The library is outputted to `target/release/maestro_client.py`.
-
-> ⚠️ When using the library, the `libmaestro_client.(so | dylib)` file
-> must be present next to `maestro_client.py`.
+> 📦 The library is outputted to <todo>
 
 ---
 
 ## 🧪 Run Integration Tests
 
 ```bash
-./run_integration_tests.sh
+make test
 ```
 
 > 🧪 This runs integration tests for the clients.  
@@ -93,8 +95,9 @@ print(workflow_push_result)
 
 ## 📁 Project Structure
 
-- `src/` — Library source code
-- `tests/` — Integration tests
+- `scheduler-client/` — Library source code & Rust client
+- `scheduler-client-jdk23/` — Java client that wraps the Rust library
+- `scheduler-client-py/` — Python client that wraps the Rust library
 
 ---
 

@@ -1,0 +1,5 @@
+[package]
+name = "schedulerclient"
+version = "0.1.0"
+authors = ["rdeepak2002"]
+edition = "2018"
